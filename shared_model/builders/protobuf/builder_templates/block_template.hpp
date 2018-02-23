@@ -123,12 +123,12 @@ namespace shared_model {
 
       BT build() {
         static_assert(S == (1 << TOTAL) - 1, "Required fields are not set");
-        auto answer = stateless_validator_.validate(
-            detail::makePolymorphic<Block>(block_));
+        Block b(block_);
+        auto answer = stateless_validator_.validate(b);
         if (answer.hasErrors()) {
           throw std::invalid_argument(answer.reason());
         }
-        return BT(Block(iroha::protocol::Block(block_)));
+        return BT(std::move(b));
       }
 
       static const int total = RequiredFields::TOTAL;

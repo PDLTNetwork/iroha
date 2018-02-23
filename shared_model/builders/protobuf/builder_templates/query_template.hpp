@@ -202,12 +202,12 @@ namespace shared_model {
 
       auto build() const {
         static_assert(S == (1 << TOTAL) - 1, "Required fields are not set");
-        auto answer = stateless_validator_.validate(
-            detail::makePolymorphic<Query>(query_));
+        Query q(query_);
+        auto answer = stateless_validator_.validate(q);
         if (answer.hasErrors()) {
           throw std::invalid_argument(answer.reason());
         }
-        return BT(Query(iroha::protocol::Query(query_)));
+        return BT(std::move(q));
       }
 
       static const int total = RequiredFields::TOTAL;
